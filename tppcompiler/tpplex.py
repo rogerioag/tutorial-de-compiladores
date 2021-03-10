@@ -1,17 +1,17 @@
+from ply.lex import TOKEN
+import ply.lex as lex
 from sys import argv, exit
 
 import logging
 logging.basicConfig(
-     level = logging.DEBUG,
-     filename = "log.txt",
-     filemode = "w",
-     format = "%(filename)10s:%(lineno)4d:%(message)s"
+    level=logging.DEBUG,
+    filename="log.txt",
+    filemode="w",
+    format="%(filename)10s:%(lineno)4d:%(message)s"
 )
 log = logging.getLogger()
- 
-import ply.lex as lex
-from ply.lex import TOKEN
- 
+
+
 tokens = [
     "ID",  # identificador
     # numerais
@@ -19,8 +19,8 @@ tokens = [
     "NUM_PONTO_FLUTUANTE",  # ponto flutuate
     "NUM_INTEIRO",  # inteiro
     # operadores binarios
-    "ADICAO",  # +
-    "SUBTRACAO",  # -
+    "MAIS",  # +
+    "MENOS",  # -
     "MULTIPLICACAO",  # *
     "DIVISAO",  # /
     "E_LOGICO",  # &&
@@ -30,14 +30,14 @@ tokens = [
     "MAIOR_IGUAL",  # >=
     "MENOR",  # <
     "MAIOR",  # >
-    "IGUALDADE",  # =
+    "IGUAL",  # =
     # operadores unarios
     "NEGACAO",  # !
     # simbolos
-    "ABRE_PAR",  # (
-    "FECHA_PAR",  # )
-    "ABRE_COL",  # [
-    "FECHA_COL",  # ]
+    "ABRE_PARENTESE",  # (
+    "FECHA_PARENTESE",  # )
+    "ABRE_COLCHETE",  # [
+    "FECHA_COLCHETE",  # ]
     "VIRGULA",  # ,
     "DOIS_PONTOS",  # :
     "ATRIBUICAO",  # :=
@@ -71,7 +71,8 @@ id = (
     r"(" + letra + r"(" + digito + r"+|_|" + letra + r")*)"
 )  # o mesmo que '((letra)(letra|_|([0-9]))*)'
 
-inteiro = r"(" + sinal + digito + r"+)"
+# inteiro = r"(" + sinal + digito + r"+)"
+inteiro = r"\d+"
 
 flutuante = (
     # r"(" + digito + r"+\." + digito + r"+?)"
@@ -80,22 +81,22 @@ flutuante = (
     # r'[-+]?[0-9]+(\.([0-9]+)?)'
     #r'[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?'
     #r"(([-\+]?)([0-9]+)\.([0-9]+))"
-    )
+)
 
 notacao_cientifica = (
     r"(" + sinal + r"([1-9])\." + digito + r"+[eE]" + sinal + digito + r"+)"
 )  # o mesmo que '(([-\+]?)([1-9])\.([0-9])+[eE]([-\+]?)([0-9]+))'
- 
+
 # Expressões Regulaes para tokens simples.
 # Símbolos.
-t_ADICAO    = r'\+'
-t_SUBTRACAO  = r'-'
-t_MULTIPLICACAO   = r'\*'
+t_MAIS = r'\+'
+t_MENOS = r'-'
+t_MULTIPLICACAO = r'\*'
 t_DIVISAO = r'/'
-t_ABRE_PAR  = r'\('
-t_FECHA_PAR  = r'\)'
-t_ABRE_COL = r'\['
-t_FECHA_COL = r'\]'
+t_ABRE_PARENTESE = r'\('
+t_FECHA_PARENTESE = r'\)'
+t_ABRE_COLCHETE = r'\['
+t_FECHA_COLCHETE = r'\]'
 t_VIRGULA = r','
 t_ATRIBUICAO = r':='
 t_DOIS_PONTOS = r':'
@@ -111,7 +112,8 @@ t_MENOR_IGUAL = r'<='
 t_MAIOR_IGUAL = r'>='
 t_MENOR = r'<'
 t_MAIOR = r'>'
-t_IGUALDADE = r'='
+t_IGUAL = r'='
+
 
 @TOKEN(id)
 def t_ID(token):
@@ -123,17 +125,21 @@ def t_ID(token):
 
     return token
 
+
 @TOKEN(notacao_cientifica)
 def t_NUM_NOTACAO_CIENTIFICA(token):
     return token
+
 
 @TOKEN(flutuante)
 def t_NUM_PONTO_FLUTUANTE(token):
     return token
 
+
 @TOKEN(inteiro)
 def t_NUM_INTEIRO(token):
     return token
+
 
 t_ignore = " \t"
 
@@ -145,22 +151,25 @@ def t_COMENTARIO(token):
     token.lexer.lineno += token.value.count("\n")
     # return token
 
+
 def t_newline(token):
     r"\n+"
     token.lexer.lineno += len(token.value)
 
+
 def define_column(input, lexpos):
     begin_line = input.rfind("\n", 0, lexpos) + 1
     return (lexpos - begin_line) + 1
+
 
 def t_error(token):
 
     # file = token.lexer.filename
     line = token.lineno
     # column = define_column(token.lexer.backup_data, token.lexpos)
-    message = "Caracter ilegal '%s'" % token.value[0]
+    message = "Caracter inválido '%s'" % token.value[0]
 
-    # print(f"[{file}]:[{line},{column}]: {message}.") 
+    # print(f"[{file}]:[{line},{column}]: {message}.")
     print(message)
 
     token.lexer.skip(1)
@@ -180,14 +189,33 @@ def main():
     # Tokenize
     while True:
       tok = lexer.token()
-      if not tok: 
+      if not tok:
         break      # No more input
-      print(tok)
-      # print(tok.type)
+      #print(tok)
+      print(tok.type)
       #print(tok.value)
 
 # Build the lexer.
-lexer = lex.lex(optimize=True,debug=True,debuglog=log)
+lexer = lex.lex(optimize=True, debug=True, debuglog=log)
+
+
+def test(pdata):
+  data = open(pdata)
+  source_file = data.read()
+  lexer.input(source_file)
+
+  s = ""
+
+  while True:
+    tok = lexer.token()
+    if not tok:
+      break      # No more input
+    s += str(tok.type) + '\n'
+
+  return s
+
 
 if __name__ == "__main__":
     main()
+
+
