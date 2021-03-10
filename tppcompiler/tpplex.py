@@ -72,6 +72,7 @@ id = (
 )  # o mesmo que '((letra)(letra|_|([0-9]))*)'
 
 # inteiro = r"(" + sinal + digito + r"+)"
+# inteiro = r"(" + digito + r"+)"
 inteiro = r"\d+"
 
 flutuante = (
@@ -195,10 +196,6 @@ def main():
       print(tok.type)
       #print(tok.value)
 
-# Build the lexer.
-lexer = lex.lex(optimize=True, debug=True, debuglog=log)
-
-
 def test(pdata):
   data = open(pdata)
   source_file = data.read()
@@ -214,6 +211,9 @@ def test(pdata):
 
   return s
 
+
+# Build the lexer.
+lexer = lex.lex(optimize=True, debug=True, debuglog=log)
 
 if __name__ == "__main__":
     main()
