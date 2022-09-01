@@ -1,0 +1,643 @@
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+\documentclass{report}
+
+
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for grffile with XeLaTeX
+    \def\Gread@@xetex#1{%
+      \IfFileExists{"\Gin@base".bb}%
+      {\Gread@eps{\Gin@base.bb}}%
+      {\Gread@@xetex@aux#1}%
+    }
+    \makeatother
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{01-compiladores-analise-lexica-tpplex}
+    
+    
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    
+    \maketitle
+    
+    
+    \tableofcontents
+
+
+    
+
+
+\hypertarget{anuxe1lise-luxe9xica}{%
+\chapter{Análise Léxica}\label{anuxe1lise-luxe9xica}}
+
+\hypertarget{preparauxe7uxe3o-do-ambiente}{%
+\section{Preparação do Ambiente}\label{preparauxe7uxe3o-do-ambiente}}
+
+\begin{itemize}
+\tightlist
+\item
+  Instalação do \href{https://www.dabeaz.com/ply/ply.html}{PLY}
+\end{itemize}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{o}{!}pip install ply
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Collecting ply
+  Downloading https://files.pythonhosted.org/packages/a3/58/35da89ee790598a0700ea49b2a66594140f44dec458c07e8e3d4979137fc/ply-3.11-py2.py3-none-any.whl (49kB)
+     |████████████████████████████████| 51kB 2.4MB/s eta 0:00:011
+Installing collected packages: ply
+Successfully installed ply-3.11
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{o}{!}jupyter nbextension install https://rawgit.com/jfbercher/small\PYZus{}nbextensions/master/highlighter.zip  \PYZhy{}\PYZhy{}user
+        \PY{o}{!}jupyter nbextension \PY{n+nb}{enable} highlighter/highlighter
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Downloading: https://rawgit.com/jfbercher/small\_nbextensions/master/highlighter.zip -> /tmp/tmpxTceyO/highlighter.zip
+Extracting: /tmp/tmpxTceyO/highlighter.zip -> /root/.local/share/jupyter/nbextensions
+Enabling notebook extension highlighter/highlighter{\ldots}
+      - Validating: \textcolor{ansi-green}{OK}
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{o}{\PYZpc{}}\PY{o}{\PYZpc{}}\PY{n+nx}{javascript}
+        \PY{n+nx}{require}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}base/js/utils\PYZdq{}}\PY{p}{)}\PY{p}{.}\PY{n+nx}{load\PYZus{}extensions}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}highlighter/highlighter\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+
+    
+    \begin{verbatim}
+<IPython.core.display.Javascript object>
+    \end{verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{k+kn}{from} \PY{n+nn}{sys} \PY{k+kn}{import} \PY{n}{argv}\PY{p}{,} \PY{n}{exit}
+        
+        \PY{k+kn}{import} \PY{n+nn}{logging}
+        \PY{n}{logging}\PY{o}{.}\PY{n}{basicConfig}\PY{p}{(}
+             \PY{n}{level} \PY{o}{=} \PY{n}{logging}\PY{o}{.}\PY{n}{DEBUG}\PY{p}{,}
+             \PY{n}{filename} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{log.txt}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+             \PY{n}{filemode} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{w}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+             \PY{n+nb}{format} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZpc{}(filename)10s}\PY{l+s+s2}{:}\PY{l+s+si}{\PYZpc{}(lineno)4d}\PY{l+s+s2}{:}\PY{l+s+si}{\PYZpc{}(message)s}\PY{l+s+s2}{\PYZdq{}}
+        \PY{p}{)}
+        \PY{n}{log} \PY{o}{=} \PY{n}{logging}\PY{o}{.}\PY{n}{getLogger}\PY{p}{(}\PY{p}{)}
+        
+        \PY{k+kn}{import} \PY{n+nn}{ply}\PY{n+nn}{.}\PY{n+nn}{lex} \PY{k}{as} \PY{n+nn}{lex}
+        \PY{k+kn}{from} \PY{n+nn}{ply}\PY{n+nn}{.}\PY{n+nn}{lex} \PY{k+kn}{import} \PY{n}{TOKEN}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{tokens} \PY{o}{=} \PY{p}{[}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ID}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} identificador}
+            \PY{c+c1}{\PYZsh{} numerais}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{NUM\PYZus{}NOTACAO\PYZus{}CIENTIFICA}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} ponto flutuante em notaçao científica}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{NUM\PYZus{}PONTO\PYZus{}FLUTUANTE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} ponto flutuate}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{NUM\PYZus{}INTEIRO}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} inteiro}
+            \PY{c+c1}{\PYZsh{} operadores binarios}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ADICAO}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} +}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{SUBTRACAO}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} \PYZhy{}}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{MULTIPLICACAO}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} *}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DIVISAO}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} /}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{E\PYZus{}LOGICO}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} \PYZam{}\PYZam{}}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{OU\PYZus{}LOGICO}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} ||}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DIFERENCA}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} \PYZlt{}\PYZgt{}}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{MENOR\PYZus{}IGUAL}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} \PYZlt{}=}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{MAIOR\PYZus{}IGUAL}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} \PYZgt{}=}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{MENOR}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} \PYZlt{}}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{MAIOR}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} \PYZgt{}}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{IGUALDADE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} =}
+            \PY{c+c1}{\PYZsh{} operadores unarios}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{NEGACAO}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} !}
+            \PY{c+c1}{\PYZsh{} simbolos}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ABRE\PYZus{}PAR}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} (}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{FECHA\PYZus{}PAR}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} )}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ABRE\PYZus{}COL}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} [}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{FECHA\PYZus{}COL}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} ]}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{VIRGULA}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} ,}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DOIS\PYZus{}PONTOS}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} :}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ATRIBUICAO}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} :=}
+            \PY{c+c1}{\PYZsh{} \PYZsq{}COMENTARIO\PYZsq{}, \PYZsh{} \PYZob{}***\PYZcb{}}
+        \PY{p}{]}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{reserved\PYZus{}words} \PY{o}{=} \PY{p}{\PYZob{}}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{se}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{SE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{então}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ENTAO}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{senão}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{SENAO}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{fim}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{FIM}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{repita}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{REPITA}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{flutuante}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{FLUTUANTE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{retorna}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{RETORNA}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{até}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ATE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{leia}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{LEIA}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{escreva}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ESCREVA}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{inteiro}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{INTEIRO}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+        \PY{p}{\PYZcb{}}
+        
+        \PY{n}{tokens} \PY{o}{=} \PY{n}{tokens} \PY{o}{+} \PY{n+nb}{list}\PY{p}{(}\PY{n}{reserved\PYZus{}words}\PY{o}{.}\PY{n}{values}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{digito} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{([0\PYZhy{}9])}\PY{l+s+s2}{\PYZdq{}}
+        \PY{n}{letra} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{([a\PYZhy{}zA\PYZhy{}ZáÁãÃàÀéÉíÍóÓõÕ])}\PY{l+s+s2}{\PYZdq{}}
+        \PY{n}{sinal} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{([}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{\PYZhy{}}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{+]?)}\PY{l+s+s2}{\PYZdq{}}
+        
+        \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{} }
+        \PY{l+s+sd}{    id deve começar com uma letra}
+        \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+        \PY{n+nb}{id} \PY{o}{=} \PY{p}{(}
+            \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{(}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{letra} \PY{o}{+} \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{(}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{digito} \PY{o}{+} \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{+|\PYZus{}|}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{letra} \PY{o}{+} \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{)*)}\PY{l+s+s2}{\PYZdq{}}
+        \PY{p}{)}  \PY{c+c1}{\PYZsh{} o mesmo que \PYZsq{}((letra)(letra|\PYZus{}|([0\PYZhy{}9]))*)\PYZsq{}}
+        
+        \PY{n}{inteiro} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{(}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{sinal} \PY{o}{+} \PY{n}{digito} \PY{o}{+} \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{+)}\PY{l+s+s2}{\PYZdq{}}
+        
+        \PY{n}{flutuante} \PY{o}{=} \PY{p}{(}
+            \PY{c+c1}{\PYZsh{} r\PYZdq{}(\PYZdq{} + digito + r\PYZdq{}+\PYZbs{}.\PYZdq{} + digito + r\PYZdq{}+?)\PYZdq{}}
+            \PY{c+c1}{\PYZsh{} (([\PYZhy{}\PYZbs{}+]?)([0\PYZhy{}9]+)\PYZbs{}.([0\PYZhy{}9]+))\PYZsq{}}
+            \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{d+[eE][\PYZhy{}+]?}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{d+|(}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{d+|}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{d+}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{d*)([eE][\PYZhy{}+]?}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{d+)?}\PY{l+s+s1}{\PYZsq{}}
+            \PY{c+c1}{\PYZsh{} r\PYZsq{}[\PYZhy{}+]?[0\PYZhy{}9]+(\PYZbs{}.([0\PYZhy{}9]+)?)\PYZsq{}}
+            \PY{c+c1}{\PYZsh{}r\PYZsq{}[+\PYZhy{}]?(\PYZbs{}d+(\PYZbs{}.\PYZbs{}d*)?|\PYZbs{}.\PYZbs{}d+)([eE][+\PYZhy{}]?\PYZbs{}d+)?\PYZsq{}}
+            \PY{c+c1}{\PYZsh{}r\PYZdq{}(([\PYZhy{}\PYZbs{}+]?)([0\PYZhy{}9]+)\PYZbs{}.([0\PYZhy{}9]+))\PYZdq{}}
+            \PY{p}{)}
+        
+        \PY{n}{notacao\PYZus{}cientifica} \PY{o}{=} \PY{p}{(}
+            \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{(}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{sinal} \PY{o}{+} \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{([1\PYZhy{}9])}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{.}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{digito} \PY{o}{+} \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{+[eE]}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{sinal} \PY{o}{+} \PY{n}{digito} \PY{o}{+} \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{+)}\PY{l+s+s2}{\PYZdq{}}
+        \PY{p}{)}  \PY{c+c1}{\PYZsh{} o mesmo que \PYZsq{}(([\PYZhy{}\PYZbs{}+]?)([1\PYZhy{}9])\PYZbs{}.([0\PYZhy{}9])+[eE]([\PYZhy{}\PYZbs{}+]?)([0\PYZhy{}9]+))\PYZsq{}}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:}  
+        \PY{c+c1}{\PYZsh{} Expressões Regulaes para tokens simples.}
+        \PY{c+c1}{\PYZsh{} Símbolos.}
+        \PY{n}{t\PYZus{}ADICAO}    \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{+}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}SUBTRACAO}  \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}MULTIPLICACAO}   \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{*}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}DIVISAO} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{/}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}ABRE\PYZus{}PAR}  \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{(}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}FECHA\PYZus{}PAR}  \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{)}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}ABRE\PYZus{}COL} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{[}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}FECHA\PYZus{}COL} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{]}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}VIRGULA} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}ATRIBUICAO} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{:=}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}DOIS\PYZus{}PONTOS} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{:}\PY{l+s+s1}{\PYZsq{}}
+        
+        \PY{c+c1}{\PYZsh{} Operadores Lógicos.}
+        \PY{n}{t\PYZus{}E\PYZus{}LOGICO} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZam{}\PYZam{}}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}OU\PYZus{}LOGICO} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{|}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{|}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}NEGACAO} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{!}\PY{l+s+s1}{\PYZsq{}}
+        
+        \PY{c+c1}{\PYZsh{} Operadores Relacionais.}
+        \PY{n}{t\PYZus{}DIFERENCA} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZlt{}\PYZgt{}}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}MENOR\PYZus{}IGUAL} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZlt{}=}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}MAIOR\PYZus{}IGUAL} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZgt{}=}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}MENOR} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZlt{}}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}MAIOR} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZgt{}}\PY{l+s+s1}{\PYZsq{}}
+        \PY{n}{t\PYZus{}IGUALDADE} \PY{o}{=} \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{=}\PY{l+s+s1}{\PYZsq{}}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n+nd}{@TOKEN}\PY{p}{(}\PY{n+nb}{id}\PY{p}{)}
+        \PY{k}{def} \PY{n+nf}{t\PYZus{}ID}\PY{p}{(}\PY{n}{token}\PY{p}{)}\PY{p}{:}
+            \PY{n}{token}\PY{o}{.}\PY{n}{type} \PY{o}{=} \PY{n}{reserved\PYZus{}words}\PY{o}{.}\PY{n}{get}\PY{p}{(}
+                \PY{n}{token}\PY{o}{.}\PY{n}{value}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ID}\PY{l+s+s2}{\PYZdq{}}
+            \PY{p}{)}  \PY{c+c1}{\PYZsh{} não é necessário fazer regras/regex para cada palavra reservada}
+            \PY{c+c1}{\PYZsh{} se o token não for uma palavra reservada automaticamente é um id}
+            \PY{c+c1}{\PYZsh{} As palavras reservadas têm precedências sobre os ids}
+        
+            \PY{k}{return} \PY{n}{token}
+        
+        \PY{n+nd}{@TOKEN}\PY{p}{(}\PY{n}{notacao\PYZus{}cientifica}\PY{p}{)}
+        \PY{k}{def} \PY{n+nf}{t\PYZus{}NUM\PYZus{}NOTACAO\PYZus{}CIENTIFICA}\PY{p}{(}\PY{n}{token}\PY{p}{)}\PY{p}{:}
+            \PY{k}{return} \PY{n}{token}
+        
+        \PY{n+nd}{@TOKEN}\PY{p}{(}\PY{n}{flutuante}\PY{p}{)}
+        \PY{k}{def} \PY{n+nf}{t\PYZus{}NUM\PYZus{}PONTO\PYZus{}FLUTUANTE}\PY{p}{(}\PY{n}{token}\PY{p}{)}\PY{p}{:}
+            \PY{k}{return} \PY{n}{token}
+        
+        \PY{n+nd}{@TOKEN}\PY{p}{(}\PY{n}{inteiro}\PY{p}{)}
+        \PY{k}{def} \PY{n+nf}{t\PYZus{}NUM\PYZus{}INTEIRO}\PY{p}{(}\PY{n}{token}\PY{p}{)}\PY{p}{:}
+            \PY{k}{return} \PY{n}{token}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{t\PYZus{}ignore} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ }\PY{l+s+se}{\PYZbs{}t}\PY{l+s+s2}{\PYZdq{}}
+        
+        \PY{c+c1}{\PYZsh{} t\PYZus{}COMENTARIO = r\PYZsq{}(\PYZbs{}\PYZob{}((.|\PYZbs{}n)*?)\PYZbs{}\PYZcb{})\PYZsq{}}
+        \PY{c+c1}{\PYZsh{} para poder contar as quebras de linha dentro dos comentarios}
+        \PY{k}{def} \PY{n+nf}{t\PYZus{}COMENTARIO}\PY{p}{(}\PY{n}{token}\PY{p}{)}\PY{p}{:}
+            \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{(}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{\PYZob{}}\PY{l+s+s2}{((.|}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{n)*?)}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{\PYZcb{})}\PY{l+s+s2}{\PYZdq{}}
+            \PY{n}{token}\PY{o}{.}\PY{n}{lexer}\PY{o}{.}\PY{n}{lineno} \PY{o}{+}\PY{o}{=} \PY{n}{token}\PY{o}{.}\PY{n}{value}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+            \PY{c+c1}{\PYZsh{} return token}
+        
+        \PY{k}{def} \PY{n+nf}{t\PYZus{}newline}\PY{p}{(}\PY{n}{token}\PY{p}{)}\PY{p}{:}
+            \PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{n+}\PY{l+s+s2}{\PYZdq{}}
+            \PY{n}{token}\PY{o}{.}\PY{n}{lexer}\PY{o}{.}\PY{n}{lineno} \PY{o}{+}\PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{token}\PY{o}{.}\PY{n}{value}\PY{p}{)}
+        
+        \PY{k}{def} \PY{n+nf}{define\PYZus{}column}\PY{p}{(}\PY{n+nb}{input}\PY{p}{,} \PY{n}{lexpos}\PY{p}{)}\PY{p}{:}
+            \PY{n}{begin\PYZus{}line} \PY{o}{=} \PY{n+nb}{input}\PY{o}{.}\PY{n}{rfind}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{n}{lexpos}\PY{p}{)} \PY{o}{+} \PY{l+m+mi}{1}
+            \PY{k}{return} \PY{p}{(}\PY{n}{lexpos} \PY{o}{\PYZhy{}} \PY{n}{begin\PYZus{}line}\PY{p}{)} \PY{o}{+} \PY{l+m+mi}{1}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{k}{def} \PY{n+nf}{t\PYZus{}error}\PY{p}{(}\PY{n}{token}\PY{p}{)}\PY{p}{:}
+        
+            \PY{c+c1}{\PYZsh{} file = token.lexer.filename}
+            \PY{n}{line} \PY{o}{=} \PY{n}{token}\PY{o}{.}\PY{n}{lineno}
+            \PY{c+c1}{\PYZsh{} column = define\PYZus{}column(token.lexer.backup\PYZus{}data, token.lexpos)}
+            \PY{n}{message} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Caracter ilegal }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+si}{\PYZpc{}s}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{n}{token}\PY{o}{.}\PY{n}{value}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+        
+            \PY{c+c1}{\PYZsh{} print(f\PYZdq{}[\PYZob{}file\PYZcb{}]:[\PYZob{}line\PYZcb{},\PYZob{}column\PYZcb{}]: \PYZob{}message\PYZcb{}.\PYZdq{}) }
+            \PY{n+nb}{print}\PY{p}{(}\PY{n}{message}\PY{p}{)}
+        
+            \PY{n}{token}\PY{o}{.}\PY{n}{lexer}\PY{o}{.}\PY{n}{skip}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+        
+            \PY{c+c1}{\PYZsh{} token.lexer.has\PYZus{}error = Trueb}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{k}{def} \PY{n+nf}{main}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+            \PY{c+c1}{\PYZsh{} argv[1] = \PYZsq{}teste.tpp\PYZsq{}}
+            \PY{n}{aux} \PY{o}{=} \PY{n}{argv}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{k}{if} \PY{n}{aux}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{!=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tpp}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+              \PY{k}{raise} \PY{n+ne}{IOError}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Not a .tpp file!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+            \PY{n}{data} \PY{o}{=} \PY{n+nb}{open}\PY{p}{(}\PY{n}{argv}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+        
+            \PY{n}{source\PYZus{}file} \PY{o}{=} \PY{n}{data}\PY{o}{.}\PY{n}{read}\PY{p}{(}\PY{p}{)}
+            \PY{n}{lexer}\PY{o}{.}\PY{n}{input}\PY{p}{(}\PY{n}{source\PYZus{}file}\PY{p}{)}
+        
+            \PY{c+c1}{\PYZsh{} Tokenize}
+            \PY{k}{while} \PY{k+kc}{True}\PY{p}{:}
+              \PY{n}{tok} \PY{o}{=} \PY{n}{lexer}\PY{o}{.}\PY{n}{token}\PY{p}{(}\PY{p}{)}
+              \PY{k}{if} \PY{o+ow}{not} \PY{n}{tok}\PY{p}{:} 
+                \PY{k}{break}      \PY{c+c1}{\PYZsh{} No more input}
+              \PY{n+nb}{print}\PY{p}{(}\PY{n}{tok}\PY{p}{)}
+              \PY{c+c1}{\PYZsh{} print(tok.type)}
+              \PY{c+c1}{\PYZsh{}print(tok.value)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{c+c1}{\PYZsh{} Build the lexer.}
+        \PY{n+nv+vm}{\PYZus{}\PYZus{}file\PYZus{}\PYZus{}} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{01\PYZhy{}compiladores\PYZhy{}analise\PYZhy{}lexica\PYZhy{}tpplex.ipynb}\PY{l+s+s2}{\PYZdq{}}
+        \PY{n}{lexer} \PY{o}{=} \PY{n}{lex}\PY{o}{.}\PY{n}{lex}\PY{p}{(}\PY{n}{optimize}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}\PY{n}{debug}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}\PY{n}{debuglog}\PY{o}{=}\PY{n}{log}\PY{p}{)}
+        
+        \PY{k}{if} \PY{n+nv+vm}{\PYZus{}\PYZus{}name\PYZus{}\PYZus{}} \PY{o}{==} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZus{}\PYZus{}main\PYZus{}\PYZus{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}
+            \PY{n}{main}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+        ---------------------------------------------------------------------------
+
+        OSError                                   Traceback (most recent call last)
+
+        01-compiladores-analise-lexica-tpplex.ipynb in <module>()
+          4 
+          5 if \_\_name\_\_ == "\_\_main\_\_":
+    ----> 6     main()
+    
+
+        01-compiladores-analise-lexica-tpplex.ipynb in main()
+          3     aux = argv[1].split('.')
+          4     if aux[-1] != 'tpp':
+    ----> 5       raise IOError("Not a .tpp file!")
+          6     data = open(argv[1])
+          7 
+
+
+        OSError: Not a .tpp file!
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{o}{\PYZpc{}\PYZpc{}writefile} teste.tpp
+        
+        \PY{n}{inteiro}\PY{p}{:} \PY{n}{a}\PY{p}{[}\PY{l+m+mi}{10}\PY{p}{]}
+        \PY{n}{flutuante}\PY{p}{:} \PY{n}{b}
+        
+        \PY{n}{inteiro} \PY{n}{func1}\PY{p}{(}\PY{n}{inteiro}\PY{p}{:}\PY{n}{x}\PY{p}{,} \PY{n}{flutuante}\PY{p}{:}\PY{n}{y}\PY{p}{)}
+          \PY{n}{inteiro}\PY{p}{:} \PY{n}{res}
+          \PY{n}{se} \PY{p}{(}\PY{n}{x} \PY{o}{\PYZgt{}} \PY{n}{y}\PY{p}{)} \PY{n}{então}
+            \PY{n}{res} \PY{p}{:}\PY{o}{=} \PY{n}{x} \PY{o}{+} \PY{n}{y}
+          \PY{n}{senão}
+            \PY{n}{res} \PY{p}{:}\PY{o}{=} \PY{n}{x} \PY{o}{*} \PY{n}{y}
+          \PY{n}{fim}
+          \PY{n}{retorna}\PY{p}{(}\PY{n}{res}\PY{p}{)}
+        \PY{n}{fim}
+        
+        \PY{n}{func2}\PY{p}{(}\PY{n}{inteiro}\PY{p}{:}\PY{n}{z}\PY{p}{,} \PY{n}{flutuante}\PY{p}{:}\PY{n}{w}\PY{p}{)}
+          \PY{n}{a} \PY{p}{:}\PY{o}{=} \PY{n}{z}
+          \PY{n}{b} \PY{p}{:}\PY{o}{=} \PY{n}{w}
+        \PY{n}{fim}
+        
+        \PY{n}{inteiro} \PY{n}{principal}\PY{p}{(}\PY{p}{)}
+          \PY{n}{inteiro}\PY{p}{:} \PY{n}{x}\PY{p}{,}\PY{n}{y}
+          \PY{n}{flutuante}\PY{p}{:} \PY{n}{w}
+          \PY{n}{a} \PY{p}{:}\PY{o}{=} \PY{l+m+mi}{10} \PY{o}{+} \PY{l+m+mi}{2}
+          \PY{n}{leia}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+          \PY{n}{leia}\PY{p}{(}\PY{n}{w}\PY{p}{)}
+          \PY{n}{w} \PY{p}{:}\PY{o}{=} \PY{o}{.}\PY{l+m+mi}{6} \PY{o}{+} \PY{l+m+mf}{1.}
+          \PY{n}{func2}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mf}{2.5}\PY{p}{)}
+          \PY{n}{b} \PY{p}{:}\PY{o}{=} \PY{n}{func1}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{w}\PY{p}{)}
+          \PY{n}{escreva}\PY{p}{(}\PY{n}{b}\PY{p}{)}
+          \PY{n}{retorna}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+        \PY{n}{fim}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Writing teste.tpp
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{o}{!}python tpplex.py teste.tpp
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+python: can't open file 'tpplex.py': [Errno 2] No such file or directory
+
+    \end{Verbatim}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
