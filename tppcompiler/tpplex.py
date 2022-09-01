@@ -5,7 +5,7 @@ from sys import argv, exit
 import logging
 logging.basicConfig(
     level=logging.DEBUG,
-    filename="log.txt",
+    filename="lex.log",
     filemode="w",
     format="%(filename)10s:%(lineno)4d:%(message)s"
 )
@@ -21,18 +21,18 @@ tokens = [
     # operadores binarios
     "MAIS",  # +
     "MENOS",  # -
-    "MULTIPLICACAO",  # *
-    "DIVISAO",  # /
-    "E_LOGICO",  # &&
-    "OU_LOGICO",  # ||
-    "DIFERENCA",  # <>
+    "VEZES",  # *
+    "DIVIDE",  # /
+    "E",  # &&
+    "OU",  # ||
+    "DIFERENTE",  # <>
     "MENOR_IGUAL",  # <=
     "MAIOR_IGUAL",  # >=
     "MENOR",  # <
     "MAIOR",  # >
     "IGUAL",  # =
     # operadores unarios
-    "NEGACAO",  # !
+    "NAO",  # !
     # simbolos
     "ABRE_PARENTESE",  # (
     "FECHA_PARENTESE",  # )
@@ -92,8 +92,8 @@ notacao_cientifica = (
 # Símbolos.
 t_MAIS = r'\+'
 t_MENOS = r'-'
-t_MULTIPLICACAO = r'\*'
-t_DIVISAO = r'/'
+t_VEZES = r'\*'
+t_DIVIDE = r'/'
 t_ABRE_PARENTESE = r'\('
 t_FECHA_PARENTESE = r'\)'
 t_ABRE_COLCHETE = r'\['
@@ -103,12 +103,12 @@ t_ATRIBUICAO = r':='
 t_DOIS_PONTOS = r':'
 
 # Operadores Lógicos.
-t_E_LOGICO = r'&&'
-t_OU_LOGICO = r'\|\|'
-t_NEGACAO = r'!'
+t_E = r'&&'
+t_OU = r'\|\|'
+t_NAO = r'!'
 
 # Operadores Relacionais.
-t_DIFERENCA = r'<>'
+t_DIFERENTE = r'<>'
 t_MENOR_IGUAL = r'<='
 t_MAIOR_IGUAL = r'>='
 t_MENOR = r'<'
@@ -118,9 +118,8 @@ t_IGUAL = r'='
 
 @TOKEN(id)
 def t_ID(token):
-    token.type = reserved_words.get(
-        token.value, "ID"
-    )  # não é necessário fazer regras/regex para cada palavra reservada
+    token.type = reserved_words.get(token.value, "ID")
+    # não é necessário fazer regras/regex para cada palavra reservada
     # se o token não for uma palavra reservada automaticamente é um id
     # As palavras reservadas têm precedências sobre os ids
 
